@@ -54,10 +54,12 @@
             android:id="@+id/content_image"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
             android:layout_gravity="center"
-            android:scaleType="centerInside"
-            android:src="@drawable/bg_pic_loading"
+            android:maxHeight="500dp"
+            android:scaleType="centerCrop"
+            android:adjustViewBounds="true"
+            android:src="@drawable/init_pic"
+            android:layout_margin="5dp"
             android:visibility="visible" />
 
 
@@ -92,7 +94,7 @@
                 android:layout_margin="4dip"
                 android:drawableLeft="@drawable/ic_action_love"
                 android:gravity="center"
-                android:text="985赞"
+                android:text="985"
                 android:textColor="#888888" />
         </com.zhy.android.percent.support.PercentLinearLayout>
     </com.zhy.android.percent.support.PercentLinearLayout>
