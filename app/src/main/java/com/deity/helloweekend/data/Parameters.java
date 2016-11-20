@@ -6,7 +6,7 @@ package com.deity.helloweekend.data;
 
 public class Parameters {
     /**BMOB_APP_ID*/
-    public static final String BMOB_APP_ID="";
+    public static final String BMOB_APP_ID="070dd04beba0e7efd84a59875539029b";
     public static final int REQUEST_PER_PAGE=30;
     /**百度广告开屏Id*/
     public static final String adPlaceId="3078409";
