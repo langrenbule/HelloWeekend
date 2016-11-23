@@ -7,7 +7,6 @@ import com.deity.helloweekend.data.Parameters;
 import com.deity.helloweekend.entity.User;
 
 import cn.bmob.v3.BmobUser;
-import cn.bmob.v3.listener.ResetPasswordListener;
 import cn.bmob.v3.listener.SaveListener;
 import cn.bmob.v3.listener.UpdateListener;
 
@@ -118,19 +117,19 @@ public class UserOperator {
         });
     }
 
-    public void resetPassword(String email){
-        BmobUser.resetPassword(mContext, email, new ResetPasswordListener() {
-            @Override
-            public void onSuccess() {
-                if (null!=iResetPasswordListener) iResetPasswordListener.onResetSuccess();
-            }
-
-            @Override
-            public void onFailure(int i, String s) {
-                if (null!=iResetPasswordListener) iResetPasswordListener.onResetFailure(i,s);
-            }
-        });
-    }
+//    public void resetPassword(String email){
+//        BmobUser.resetPassword(mContext, email, new ResetPasswordListener() {
+//            @Override
+//            public void onSuccess() {
+//                if (null!=iResetPasswordListener) iResetPasswordListener.onResetSuccess();
+//            }
+//
+//            @Override
+//            public void onFailure(int i, String s) {
+//                if (null!=iResetPasswordListener) iResetPasswordListener.onResetFailure(i,s);
+//            }
+//        });
+//    }
 
 
 }
