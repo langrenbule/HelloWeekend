@@ -40,8 +40,6 @@ dependencies {
     compile 'com.android.support:appcompat-v7:24.2.1'
     compile 'com.android.support:design:24.2.1'
     testCompile 'junit:junit:4.12'
-    compile files('libs/mta-sdk-1.0.0.jar')
-    compile files('libs/open_sdk.jar')
     compile files('libs/Baidu_MobAds_SDK.jar')
     compile files('libs/umeng-analytics-v6.0.4.jar')
     compile files('libs/utdid4all-1.0.4.jar')
@@ -51,4 +49,10 @@ dependencies {
     compile 'com.zhy:percent-support-extends:1.1.1'
     compile 'com.pnikosis:materialish-progress:1.7'
     compile files('libs/BmobSDK_V3.3.9_0612.jar')
+    compile files('libs/SocialSDK_WeiXin_2.jar')
+    compile files('libs/SocialSDK_umengwx.jar')
+    compile files('libs/SocialSDK_umengqq.jar')
+    compile files('libs/umeng_social_api.jar')
+    compile files('libs/umeng_social_net.jar')
+    compile files('libs/umeng_social_view.jar')
 }
