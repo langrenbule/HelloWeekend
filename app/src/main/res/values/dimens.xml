@@ -8,5 +8,8 @@
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="text_size_normal">16sp</dimen>
     <dimen name="min_dynamic_text">200dp</dimen>
+    <dimen name="size_dimen_10">10dp</dimen>
+
+    <dimen name="detail_backdrop_height">256dp</dimen>
 
 </resources>

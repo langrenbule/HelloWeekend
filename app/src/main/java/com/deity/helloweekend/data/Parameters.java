@@ -10,7 +10,7 @@ public class Parameters {
     /**
      * 此为腾讯官方提供给开发者用于测试的APP_ID，个人开发者需要去QQ互联官网为自己的应用申请对应的AppId
      */
-    public static final int REQUEST_PER_PAGE=30;
+    public static final int REQUEST_PER_PAGE=5;
     /**百度广告开屏Id*/
     public static final String adPlaceId="3078409";
     public enum SexType{

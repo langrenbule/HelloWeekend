@@ -97,11 +97,14 @@ public class MainActivity extends BaseActivity
 
         if (id == R.id.nav_camera) {
             // Handle the camera action
+            Intent intent = new Intent(MainActivity.this, CommentActivity.class);
+//                intent.putExtra("url", data.getNewBornArticleUrl());
+//                intent.putExtra("imageUrl", data.getNewBornImageUrl());
+//                intent.putExtra("newsTitle", data.getNewBornTitle());
+            startActivity(intent);
         } else if (id == R.id.nav_gallery) {
 
         } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
 
         } else if (id == R.id.nav_share) {
 

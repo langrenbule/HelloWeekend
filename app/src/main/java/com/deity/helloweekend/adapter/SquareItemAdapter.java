@@ -12,6 +12,7 @@ import com.bumptech.glide.Glide;
 import com.deity.helloweekend.R;
 import com.deity.helloweekend.entity.Dynamic;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
@@ -27,7 +28,7 @@ public class SquareItemAdapter extends RecyclerView.Adapter<SquareItemAdapter.Vi
     private RecycleViewOnClickListener recycleViewOnClickListener;
     private LayoutInflater inflater;
     private Context context;
-    private List<Dynamic> mSquareItemList;
+    private List<Dynamic> mSquareItemList = new ArrayList<>();
 
     public SquareItemAdapter(Context context){
         this.context = context;
@@ -35,7 +36,13 @@ public class SquareItemAdapter extends RecyclerView.Adapter<SquareItemAdapter.Vi
     }
 
     public void setData(List<Dynamic> mSquareItemList){
+        if (null!=mSquareItemList&&!mSquareItemList.isEmpty())
         this.mSquareItemList = mSquareItemList;
+    }
+
+    public void addData(List<Dynamic> mSquareItemList){
+        if (null!=mSquareItemList&&!mSquareItemList.isEmpty())
+        this.mSquareItemList.addAll(mSquareItemList);
     }
 
     public interface RecycleViewOnClickListener{

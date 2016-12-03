@@ -3,4 +3,8 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+    <color name="theme_color">#D95555</color>
+    <drawable name="bg_ic_navi_normal">#FFFFFF</drawable>
+    <drawable name="bg_ic_navi_pressed">#EEEEEE</drawable>
+    <color name="second_color">#888888</color>
 </resources>
