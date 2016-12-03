@@ -2,40 +2,38 @@ package com.deity.helloweekend.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.deity.helloweekend.R;
-import com.deity.helloweekend.adapter.EndlessRecyclerOnScrollListener;
-import com.deity.helloweekend.adapter.HeaderViewRecyclerAdapter;
 import com.deity.helloweekend.adapter.SquareItemAdapter;
-import com.deity.helloweekend.entity.SquareItem;
+import com.deity.helloweekend.data.Parameters;
+import com.deity.helloweekend.entity.Dynamic;
 import com.deity.helloweekend.mvp.model.SquareOperator;
 import com.deity.helloweekend.ui.BaseFragment;
+import com.wuxiaolong.pullloadmorerecyclerview.PullLoadMoreRecyclerView;
 
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import cn.bmob.v3.BmobQuery;
+import cn.bmob.v3.exception.BmobException;
+import cn.bmob.v3.listener.FindListener;
 
-import static com.deity.helloweekend.R.id.widget_refresh;
 
 /**
  * 交友广场
  * Created by Deity on 2016/11/20.
  */
 
-public class SquareFragment extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener{
+public class SquareFragment extends BaseFragment {
 
-    @Bind(widget_refresh) public SwipeRefreshLayout widgetRefresh;
-    @Bind(R.id.square_item_list) public RecyclerView square_item_list;
+    @Bind(R.id.square_item_list)
+    public PullLoadMoreRecyclerView square_item_list;
 
     private SquareItemAdapter mSquareItemAdapter;
-    private HeaderViewRecyclerAdapter headerViewRecyclerAdapter;
     private SquareOperator mSquareOperator;
     private int currentNewsPage = 0;
 
@@ -49,26 +47,18 @@ public class SquareFragment extends BaseFragment implements SwipeRefreshLayout.O
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_square, container, false);
-        ButterKnife.bind(this,view);
-        widgetRefresh.setOnRefreshListener(this);
+        ButterKnife.bind(this, view);
         initRecycleView();
         return view;
     }
 
-    private void createLoadMoreView() {
-        View loadMoreView = LayoutInflater
-                .from(getActivity())
-                .inflate(R.layout.load_more_view, square_item_list, false);
-        headerViewRecyclerAdapter.addFooterView(loadMoreView);
-    }
-
-    public void initRecycleView(){
+    public void initRecycleView() {
         mSquareItemAdapter = new SquareItemAdapter(getActivity());
-        headerViewRecyclerAdapter = new HeaderViewRecyclerAdapter(mSquareItemAdapter);
-        square_item_list.setAdapter(headerViewRecyclerAdapter);
-        mSquareItemAdapter.setRecycleViewOnClickListener(new SquareItemAdapter.RecycleViewOnClickListener() {
+        square_item_list.setLinearLayout();
+        square_item_list.setAdapter(mSquareItemAdapter);
+        square_item_list.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onItemClick(View view, SquareItem data) {
+            public void onClick(View v) {
 //                Intent intent = new Intent(getActivity(), NewsContentActivity.class);
 //                intent.putExtra("url", data.getNewBornArticleUrl());
 //                intent.putExtra("imageUrl", data.getNewBornImageUrl());
@@ -76,30 +66,42 @@ public class SquareFragment extends BaseFragment implements SwipeRefreshLayout.O
 //                startActivity(intent);
             }
         });
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
-        square_item_list.setHasFixedSize(true);
-        square_item_list.setLayoutManager(linearLayoutManager);
-        createLoadMoreView();
-        square_item_list.addOnScrollListener(new EndlessRecyclerOnScrollListener(linearLayoutManager) {
+        square_item_list.setOnPullLoadMoreListener(new PullLoadMoreRecyclerView.PullLoadMoreListener() {
             @Override
-            public void onLoadMore(int currentPage) {
-                headerViewRecyclerAdapter.setFooterViewsVisable();
-                currentNewsPage = currentPage;
-                mSquareOperator.obtainSquareItemList(getActivity(),currentNewsPage);
+            public void onRefresh() {
+//                mSquareOperator.obtainSquareItemList(getActivity(),1);
+                obtainSquareData(1);
+            }
+
+            @Override
+            public void onLoadMore() {
+                square_item_list.setFooterViewText("loading");
+                obtainSquareData(currentNewsPage);
             }
         });
+
     }
 
     /**
-     * Called when a swipe gesture triggers a refresh.
+     *  mPullLoadMoreRecyclerView.scrollToTop() 快速返回顶部
+     * @param currentNewsPage
      */
-    @Override
-    public void onRefresh() {
-//        mSquareOperator.obtainSquareItemList(getActivity(),1);
-        List<SquareItem> itemList = mSquareOperator.monitorList();
-        mSquareItemAdapter.setData(itemList);
-        mSquareItemAdapter.notifyDataSetChanged();
-        widgetRefresh.setRefreshing(false);
+    public void obtainSquareData(int currentNewsPage) {
+        BmobQuery<Dynamic> query = new BmobQuery<>();
+        query.order("-createdAt").setLimit(Parameters.REQUEST_PER_PAGE)//.setSkip(Parameters.REQUEST_PER_PAGE*(currentNewsPage))
+                .include("author").findObjects(new FindListener<Dynamic>() {
+            @Override
+            public void done(List<Dynamic> list, BmobException e) {
+                square_item_list.setPullLoadMoreCompleted();
+                if (null != list && !list.isEmpty()) {
+                    mSquareItemAdapter.setData(list);
+                    mSquareItemAdapter.notifyDataSetChanged();
+                }
+                if (null != e) {
+                    System.out.println("获取数据失败>>>>" + e.toString());
+                }
+            }
+        });
 
     }
 }

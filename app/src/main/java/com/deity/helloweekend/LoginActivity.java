@@ -3,6 +3,7 @@ package com.deity.helloweekend;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.Toast;
@@ -20,7 +21,8 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.bmob.v3.BmobUser;
-import cn.bmob.v3.listener.OtherLoginListener;
+import cn.bmob.v3.exception.BmobException;
+import cn.bmob.v3.listener.LogInListener;
 
 
 /**
@@ -30,7 +32,7 @@ import cn.bmob.v3.listener.OtherLoginListener;
 
 public class LoginActivity extends BaseActivity {
     private static final String TAG = LoginActivity.class.getSimpleName();
-//    public Tencent mTencent;
+    private UMShareAPI mShareAPI = null;
     @Bind(R.id.btn_qq)
     public Button btn_qq;
 
@@ -39,7 +41,8 @@ public class LoginActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
-        BmobUser user = BmobUser.getCurrentUser(this);
+        mShareAPI = UMShareAPI.get(this);
+        BmobUser user = BmobUser.getCurrentUser();
         if(user!=null){
             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
             startActivity(intent);
@@ -65,6 +68,7 @@ public class LoginActivity extends BaseActivity {
         @Override
         public void onComplete(SHARE_MEDIA platform, int action, Map<String, String> data) {
             Toast.makeText(getApplicationContext(), "Authorize succeed,Platform>>>"+platform.toString()+" token>>"+data.get("access_token")+" expires_in>>>"+data.get("expires_in")+" openId>>"+data.get("openid"), Toast.LENGTH_SHORT).show();
+            initGetUserInfo("");
             BmobUser.BmobThirdUserAuth authInfo = new BmobUser.BmobThirdUserAuth(platform.toString().toLowerCase(),data.get("access_token"), data.get("expires_in"),data.get("openid"));
             loginWithAuth(authInfo);
         }
@@ -82,53 +86,12 @@ public class LoginActivity extends BaseActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        com.umeng.socialize.utils.Log.i("result", "requestCode="+requestCode);
         super.onActivityResult(requestCode, resultCode, data);
-        UMShareAPI.get(this).HandleQQError(this,requestCode,listener);
-        UMShareAPI.get(this).onActivityResult(requestCode, resultCode, data);
+        mShareAPI.HandleQQError(this,requestCode,listener);
+        mShareAPI.onActivityResult(requestCode, resultCode, data);
     }
 
 
-//    public void qqAuthorize() {
-//
-////        mTencent = Tencent.createInstance(AppId, this.getApplicationContext());
-////        if (!mTencent.isSessionValid())
-////        {
-////            mTencent.login(this, Scope, listener);
-////        }
-//        if (mTencent == null) {
-//            mTencent = Tencent.createInstance(Parameters.QQ_APP_ID, getApplicationContext());
-//        }
-//        mTencent.logout(this);
-//        mTencent.login(this, "all", new IUiListener() {
-//            @Override
-//            public void onComplete(Object result) {
-//                if (result != null) {
-//                    JSONObject jsonObject = (JSONObject) result;
-//                    try {
-//                        String token = jsonObject.getString(com.tencent.connect.common.Constants.PARAM_ACCESS_TOKEN);
-//                        String expires = jsonObject.getString(com.tencent.connect.common.Constants.PARAM_EXPIRES_IN);
-//                        String openId = jsonObject.getString(com.tencent.connect.common.Constants.PARAM_OPEN_ID);
-//                        BmobUser.BmobThirdUserAuth authInfo = new BmobUser.BmobThirdUserAuth(BmobUser.BmobThirdUserAuth.SNS_TYPE_QQ, token, expires, openId);
-//                        loginWithAuth(authInfo);
-//                    } catch (JSONException e) {
-//                    }
-//                }
-//            }
-//
-//            @Override
-//            public void onError(UiError arg0) {
-//                // TODO Auto-generated method stub
-//                Log.i(TAG, "QQ授权出错：" + arg0.errorCode + "--" + arg0.errorDetail);
-//            }
-//
-//            @Override
-//            public void onCancel() {
-//                // TODO Auto-generated method stub
-//                Log.i(TAG, "取消qq授权");
-//            }
-//        });
-//    }
 
 
     /**
@@ -138,54 +101,47 @@ public class LoginActivity extends BaseActivity {
      * @method loginWithAuth
      */
     public void loginWithAuth(final BmobUser.BmobThirdUserAuth authInfo) {
-        BmobUser.loginWithAuthData(LoginActivity.this, authInfo, new OtherLoginListener() {
+        BmobUser.loginWithAuthData(authInfo, new LogInListener<JSONObject>() {
 
             @Override
-            public void onSuccess(JSONObject userAuth) {
+            public void done(JSONObject jsonObject, BmobException e) {
                 // TODO Auto-generated method stub
-                Log.i("smile", authInfo.getSnsType() + "登陆成功返回:" + userAuth);
+                Log.i("smile", authInfo.getSnsType() + "登陆成功返回:" + jsonObject.toString());
                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                intent.putExtra("json", userAuth.toString());
+                intent.putExtra("json", jsonObject.toString());
                 intent.putExtra("from", authInfo.getSnsType());
                 startActivity(intent);
             }
-
-            @Override
-            public void onFailure(int code, String msg) {
-                // TODO Auto-generated method stub
-                Log.i(TAG, "第三方登陆失败：" + msg);
-            }
-
         });
     }
 
+    private void initGetUserInfo(String snsType){
+        SHARE_MEDIA platform = null;
+        if (TextUtils.isEmpty(snsType)) platform = SHARE_MEDIA.QQ;
+        mShareAPI.getPlatformInfo(LoginActivity.this, platform, umAuthListener);
+    }
 
-    /**
-     * 获取QQ的信息:具体可查看QQ的官方Demo，最新的QQ登录sdk已提供获取用户资料的接口并提供相应示例，可忽略此方式
-     * @Title: getQQInfo
-     * @Description: TODO
-     * @param
-     * @return void
-     * @throws
-     */
-//    public void getQQInfo(final String access_token, final String openId, final String oauth_consumer_key) {
-//        // 若更换为自己的APPID后，仍然获取不到自己的用户信息，则需要
-//        // 根据(http://wiki.open.qq.com/wiki/website/get_user_info)提供的API文档，想要获取QQ用户的信息，则需要自己调用接口，传入对应的参数
-//        new Thread() {
-//            @Override
-//            public void run() {
-//                Map<String, String> params = new HashMap<String, String>();
-//                params.put("access_token", access_token);// 此为QQ登陆成功之后返回access_token
-//                params.put("openid", openId);
-//                params.put("oauth_consumer_key", oauth_consumer_key);// oauth_consumer_key为申请QQ登录成功后，分配给应用的appid
-//                params.put("format", "json");// 格式--非必填项
-//                String result = NetUtils.getRequest("https://graph.qq.com/user/get_user_info", params);
-//                Log.d("login", "QQ的个人信息：" + result);
-//
-//            }
-//
-//        }.start();
-//    }
+    private UMAuthListener umAuthListener = new UMAuthListener() {
+        @Override
+        public void onComplete(SHARE_MEDIA platform, int action, Map<String, String> data) {
+            for (String key : data.keySet()) {
+                com.umeng.socialize.utils.Log.e("xxxxxx key = "+key+"    value= "+data.get(key));
+            }
+            if (data!=null){
+                Toast.makeText(getApplicationContext(), data.toString(), Toast.LENGTH_SHORT).show();
+            }
+        }
+
+        @Override
+        public void onError(SHARE_MEDIA platform, int action, Throwable t) {
+            Toast.makeText( getApplicationContext(), "get fail"+t.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        public void onCancel(SHARE_MEDIA platform, int action) {
+            Toast.makeText( getApplicationContext(), "get cancel", Toast.LENGTH_SHORT).show();
+        }
+    };
 
 
 }

@@ -8,8 +8,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.deity.helloweekend.R;
-import com.deity.helloweekend.entity.SquareItem;
+import com.deity.helloweekend.entity.Dynamic;
 
 import java.util.List;
 
@@ -26,19 +27,19 @@ public class SquareItemAdapter extends RecyclerView.Adapter<SquareItemAdapter.Vi
     private RecycleViewOnClickListener recycleViewOnClickListener;
     private LayoutInflater inflater;
     private Context context;
-    private List<SquareItem> mSquareItemList;
+    private List<Dynamic> mSquareItemList;
 
     public SquareItemAdapter(Context context){
         this.context = context;
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
-    public void setData(List<SquareItem> mSquareItemList){
+    public void setData(List<Dynamic> mSquareItemList){
         this.mSquareItemList = mSquareItemList;
     }
 
     public interface RecycleViewOnClickListener{
-        void onItemClick(View view,SquareItem data);
+        void onItemClick(View view,Dynamic data);
     }
 
     public RecycleViewOnClickListener getRecycleViewOnClickListener() {
@@ -52,7 +53,7 @@ public class SquareItemAdapter extends RecyclerView.Adapter<SquareItemAdapter.Vi
     @Override
     public void onClick(View view) {
         if (null!=recycleViewOnClickListener){
-            recycleViewOnClickListener.onItemClick(view, (SquareItem) view.getTag());
+            recycleViewOnClickListener.onItemClick(view, (Dynamic) view.getTag());
         }
     }
 
@@ -66,11 +67,13 @@ public class SquareItemAdapter extends RecyclerView.Adapter<SquareItemAdapter.Vi
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        SquareItem data = mSquareItemList.get(position);
+        Dynamic data = mSquareItemList.get(position);
         holder.userName.setText(data.getAuthor().getUsername());
 //        Glide.with(context).load(data.getAuthor().getAvatar().getUrl()).placeholder(R.drawable.ic_launcher).into(holder.userImageUrl);
-        holder.content_text.setText(data.getWeibo());
-//        Glide.with(context).load(data.getWeiboImageUrl()).placeholder(R.drawable.ic_launcher).into(holder.content_image);
+        holder.content_text.setText(data.getContent());
+        if (null!=data.getDynamicImage()) {
+            Glide.with(context).load(data.getDynamicImage().getUrl()).placeholder(R.drawable.ic_launcher).into(holder.content_image);
+        }
         holder.itemView.setTag(data);
     }
 

@@ -6,11 +6,10 @@ package com.deity.helloweekend.data;
 
 public class Parameters {
     /**BMOB_APP_ID*/
-    public static final String BMOB_APP_ID="070dd04beba0e7efd84a59875539029b";
+    public static final String BMOB_APP_ID="a1d0e1cb293c0682c2a40e8e7a9c5152";
     /**
      * 此为腾讯官方提供给开发者用于测试的APP_ID，个人开发者需要去QQ互联官网为自己的应用申请对应的AppId
      */
-    public static final String QQ_APP_ID="222222";//101363589
     public static final int REQUEST_PER_PAGE=30;
     /**百度广告开屏Id*/
     public static final String adPlaceId="3078409";

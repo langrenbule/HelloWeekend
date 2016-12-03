@@ -1,7 +1,6 @@
 package com.deity.helloweekend.mvp.model;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.deity.helloweekend.data.Parameters;
 import com.deity.helloweekend.entity.SquareItem;
@@ -12,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.bmob.v3.BmobQuery;
+import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
 
 /**
@@ -29,7 +29,7 @@ public class SquareOperator {
 
     public interface IFindSquareItemsListener{
         void success(List<SquareItem> list);
-        void fail(int errorCode,String errorDescription);
+        void fail(Exception errorDescription);
     }
 
     public IFindSquareItemsListener getiFindSquareItemsListener() {
@@ -45,17 +45,27 @@ public class SquareOperator {
         query.order("-createdAt").addWhereLessThan("createdAt", SmallUtils.getCurrentTime()).setLimit(Parameters.REQUEST_PER_PAGE);
         query.setSkip(page*Parameters.REQUEST_PER_PAGE);
         query.include("author");
-        query.findObjects(context, new FindListener<SquareItem>() {
+        query.findObjects(new FindListener<SquareItem>() {
             @Override
-            public void onSuccess(List<SquareItem> list) {
-                if (null!=iFindSquareItemsListener) iFindSquareItemsListener.success(list);
-            }
+            public void done(List<SquareItem> list, BmobException e) {
 
-            @Override
-            public void onError(int i, String s) {
-                Log.i(SquareOperator.class.getSimpleName(),"obtainSquareItemList fail>>>"+i+"|"+s);
-                if (null!=iFindSquareItemsListener) iFindSquareItemsListener.fail(i,s);
+                if (null!=iFindSquareItemsListener){
+                    if (null!=list) iFindSquareItemsListener.success(list);
+                    if (null!=e)  iFindSquareItemsListener.fail(e);
+                }
+
             }
+//
+//            @Override
+//            public void onSuccess(List<SquareItem> list) {
+//                if (null!=iFindSquareItemsListener) iFindSquareItemsListener.success(list);
+//            }
+//
+//            @Override
+//            public void onError(int i, String s) {
+//                Log.i(SquareOperator.class.getSimpleName(),"obtainSquareItemList fail>>>"+i+"|"+s);
+//                if (null!=iFindSquareItemsListener) iFindSquareItemsListener.fail(i,s);
+//            }
         });
     }
 

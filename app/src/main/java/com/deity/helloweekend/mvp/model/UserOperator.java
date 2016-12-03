@@ -1,12 +1,12 @@
 package com.deity.helloweekend.mvp.model;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.deity.helloweekend.data.Parameters;
 import com.deity.helloweekend.entity.User;
 
 import cn.bmob.v3.BmobUser;
+import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.SaveListener;
 import cn.bmob.v3.listener.UpdateListener;
 
@@ -23,28 +23,32 @@ public class UserOperator {
     private IUpdateListener iUpdateListener;
     private IResetPasswordListener iResetPasswordListener;
 
-    public UserOperator(Context mContext){
+    public UserOperator(Context mContext) {
         this.mContext = mContext;
     }
 
-    public interface ISignUpListener{
+    public interface ISignUpListener {
         void signUpSuccess();
-        void signUpFail(int errorCode,String errorDescription);
+
+        void signUpFail(BmobException errorDescription);
     }
 
-    public interface ILoginListener{
+    public interface ILoginListener {
         void loginSuccess();
-        void loginFail(int errorCode,String errorDescription);
+
+        void loginFail(BmobException errorDescription);
     }
 
-    public interface IUpdateListener{
+    public interface IUpdateListener {
         void onUpdateSuccess();
-        void onUpdateFailure(int errorCode,String errorDescription);
+
+        void onUpdateFailure(BmobException errorDescription);
     }
 
-    public interface IResetPasswordListener{
+    public interface IResetPasswordListener {
         void onResetSuccess();
-        void onResetFailure(int errorCode,String errorDescription);
+
+        void onResetFailure(int errorCode, String errorDescription);
     }
 
     public void setiLoginListener(ILoginListener iLoginListener) {
@@ -55,81 +59,59 @@ public class UserOperator {
         this.iSignUpListener = iSignUpListener;
     }
 
-    /**新用户注册*/
-    public void signUp(String userName,String password,String email){
-        User user = new User(userName,password,email);
+    /**
+     * 新用户注册
+     */
+    public void signUp(String userName, String password, String email) {
+        User user = new User(userName, password, email);
         user.setSex(Parameters.SexType.SEX_UNKNOW.getDescription());
         user.setSignature("这个家伙很懒，什么也不说。。。");
-        user.signUp(mContext, new SaveListener() {
+        user.signUp(new SaveListener() {
             @Override
-            public void onSuccess() {
-                if (null!=iSignUpListener) iSignUpListener.signUpSuccess();
-            }
+            public void done(Object o, BmobException e) {
+                if (null != iSignUpListener) iSignUpListener.signUpSuccess();
 
-            @Override
-            public void onFailure(int i, String s) {
-                Log.i(TAG,"sign up Fail,cause by>>>"+s);
-                if (null!=iSignUpListener) iSignUpListener.signUpFail(i,s);
+                if (null != iSignUpListener&&null!=e) iSignUpListener.signUpFail(e);
             }
         });
     }
 
-    /**获取当前用户*/
-    public User obtainCurrentUser(){
-        return BmobUser.getCurrentUser(mContext, User.class);
+    /**
+     * 获取当前用户
+     */
+    public User obtainCurrentUser() {
+        return BmobUser.getCurrentUser(User.class);
     }
 
-    public void login(String userName,String password){
+    public void login(String userName, String password) {
         BmobUser user = new BmobUser();
         user.setUsername(userName);
         user.setPassword(password);
-        user.login(mContext, new SaveListener() {
+        user.login(new SaveListener() {
             @Override
-            public void onSuccess() {
-                if(null!=iLoginListener) iLoginListener.loginSuccess();
-            }
+            public void done(Object o, BmobException e) {
+                if (null != iLoginListener) iLoginListener.loginSuccess();
 
-            @Override
-            public void onFailure(int i, String s) {
-                if (null!=iLoginListener) iLoginListener.loginFail(i,s);
+                if (null != iLoginListener&&null!=e) iLoginListener.loginFail(e);
             }
         });
     }
 
-    public void loginOut(){
-        BmobUser.logOut(mContext);
+    public void loginOut() {
+        BmobUser.logOut();
     }
 
-    public void updateUser(String sex,String signature){
+    public void updateUser(String sex, String signature) {
         User user = obtainCurrentUser();
         user.setSex(sex);
         user.setSignature(signature);
-        user.update(mContext, new UpdateListener() {
+        user.update(new UpdateListener() {
             @Override
-            public void onSuccess() {
-                if (null!=iUpdateListener) iUpdateListener.onUpdateSuccess();
-            }
+            public void done(BmobException e) {
+                if (null != iUpdateListener) iUpdateListener.onUpdateSuccess();
 
-            @Override
-            public void onFailure(int i, String s) {
-                if (null!=iUpdateListener) iUpdateListener.onUpdateFailure(i,s);
+                if (null != iUpdateListener) iUpdateListener.onUpdateFailure(e);
             }
         });
     }
-
-//    public void resetPassword(String email){
-//        BmobUser.resetPassword(mContext, email, new ResetPasswordListener() {
-//            @Override
-//            public void onSuccess() {
-//                if (null!=iResetPasswordListener) iResetPasswordListener.onResetSuccess();
-//            }
-//
-//            @Override
-//            public void onFailure(int i, String s) {
-//                if (null!=iResetPasswordListener) iResetPasswordListener.onResetFailure(i,s);
-//            }
-//        });
-//    }
-
-
 }

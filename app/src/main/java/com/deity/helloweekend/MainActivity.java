@@ -1,5 +1,6 @@
 package com.deity.helloweekend;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -15,7 +16,6 @@ import android.view.View;
 
 import com.deity.helloweekend.fragment.SquareFragment;
 import com.deity.helloweekend.ui.BaseActivity;
-
 
 
 public class MainActivity extends BaseActivity
@@ -81,6 +81,8 @@ public class MainActivity extends BaseActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            Intent dynamicIntent = new Intent(MainActivity.this,DynamicActivity.class);
+            startActivity(dynamicIntent);
             return true;
         }
 
