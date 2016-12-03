@@ -13,7 +13,7 @@ import cn.bmob.v3.Bmob;
  */
 
 public class HWApplication extends Application {
-    private HWApplication instance;
+    public static HWApplication instance;
 
     @Override
     public void onCreate() {
