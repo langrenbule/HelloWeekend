@@ -138,7 +138,7 @@ public class SquareFragment extends BaseFragment implements SwipeRefreshLayout.O
                 mSwipeRefreshLayout.setRefreshing(false);
                 if (null != list && !list.isEmpty()) {
                     currentNewsPage++;//只有成功了，才递增
-                    mSquareDataAdapter.setData(list);
+                    mSquareDataAdapter.setNewData(list);
                 }
                 if (null != e) {
                     System.out.println("获取数据失败>>>>" + e.toString());

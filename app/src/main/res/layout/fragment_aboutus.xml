@@ -19,7 +19,7 @@
         android:layout_above="@id/app_name"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="18dp"
-        android:src="@drawable/ic_launcher" />
+        android:src="@drawable/ic_laucher" />
 
     <TextView
         android:id="@+id/version_name"

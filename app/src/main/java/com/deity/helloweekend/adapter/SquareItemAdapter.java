@@ -79,7 +79,7 @@ public class SquareItemAdapter extends RecyclerView.Adapter<SquareItemAdapter.Vi
 //        Glide.with(context).load(data.getAuthor().getAvatar().getUrl()).placeholder(R.drawable.ic_launcher).into(holder.userImageUrl);
         holder.content_text.setText(data.getContent());
         if (null!=data.getDynamicImage()) {
-            Glide.with(context).load(data.getDynamicImage().getUrl()).placeholder(R.drawable.ic_launcher).into(holder.content_image);
+            Glide.with(context).load(data.getDynamicImage().getUrl()).placeholder(R.drawable.ic_laucher).into(holder.content_image);
         }
         holder.itemView.setTag(data);
     }

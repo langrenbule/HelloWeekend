@@ -32,7 +32,7 @@ public class SquareDataAdapter extends CommonBaseAdapter<Dynamic> {
 //        }
         holder.setText(R.id.content_text,data.getContent());
         if (null!=data.getDynamicImage()) {
-            Glide.with(context).load(data.getDynamicImage().getUrl()).placeholder(R.drawable.ic_launcher).into((ImageView) holder.getView(R.id.content_image));
+            Glide.with(context).load(data.getDynamicImage().getUrl()).placeholder(R.drawable.ic_laucher).into((ImageView) holder.getView(R.id.content_image));
         }
     }
 
