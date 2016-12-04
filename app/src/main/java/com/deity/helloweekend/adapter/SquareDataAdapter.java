@@ -1,6 +1,7 @@
 package com.deity.helloweekend.adapter;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
@@ -26,7 +27,9 @@ public class SquareDataAdapter extends CommonBaseAdapter<Dynamic> {
 
     @Override
     protected void convert(ViewHolder holder, Dynamic data) {
-        holder.setText(R.id.user_name,data.getAuthor().getUsername());
+        if (TextUtils.isEmpty(data.getAuthor().getNickName())){
+            holder.setText(R.id.user_name,data.getAuthor().getNickName());
+        }
 //        if (!TextUtils.isEmpty(data.getAuthor().getAvatar().getUrl())){
 //            Glide.with(context).load(data.getAuthor().getAvatar().getUrl()).placeholder(R.drawable.ic_launcher).into((ImageView) holder.getView(R.id.user_logo));
 //        }

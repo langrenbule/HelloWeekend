@@ -13,6 +13,10 @@ public class Comment extends BmobObject {
     /**当前对应的评论*/
     private String currentComment;
 
+    public Comment(User user,String currentComment){
+        this.user = user;
+        this.currentComment = currentComment;
+    }
     public User getUser() {
         return user;
     }

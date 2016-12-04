@@ -2,12 +2,13 @@ package com.deity.helloweekend.entity;
 
 import cn.bmob.v3.BmobObject;
 import cn.bmob.v3.datatype.BmobFile;
+import cn.bmob.v3.datatype.BmobRelation;
 
 /**
  * Created by Deity on 2016/11/30.
  */
 
-public class Dynamic extends BmobObject {
+public class Dynamic extends BmobObject{
 
     private User author;
     private String content;
@@ -15,7 +16,7 @@ public class Dynamic extends BmobObject {
     private int love;
     private int hate;
     private int commentNum;
-//    private BmobRelation relation;
+    private BmobRelation relation;
 
 
     public User getAuthor() {
@@ -64,5 +65,13 @@ public class Dynamic extends BmobObject {
 
     public void setCommentNum(int commentNum) {
         this.commentNum = commentNum;
+    }
+
+    public BmobRelation getRelation() {
+        return relation;
+    }
+
+    public void setRelation(BmobRelation relation) {
+        this.relation = relation;
     }
 }

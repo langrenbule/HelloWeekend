@@ -102,10 +102,10 @@ public class SquareFragment extends BaseFragment implements SwipeRefreshLayout.O
 
             @Override
             public void onItemClick(ViewHolder viewHolder, Dynamic data, int position) {
+                Bundle bundle = new Bundle();
                 Intent intent = new Intent(getActivity(), CommentActivity.class);
-//                intent.putExtra("url", data.getNewBornArticleUrl());
-//                intent.putExtra("imageUrl", data.getNewBornImageUrl());
-//                intent.putExtra("newsTitle", data.getNewBornTitle());
+                bundle.putSerializable("dynamic",data);
+                intent.putExtras(bundle);
                 startActivity(intent);
             }
         });

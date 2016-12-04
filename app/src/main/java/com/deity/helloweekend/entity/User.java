@@ -18,6 +18,7 @@ public class User extends BmobUser {
     private BmobRelation favorite;
     /**性别*/
     private String sex;
+    private String nickName;
 
     public User(){}
 
@@ -63,5 +64,13 @@ public class User extends BmobUser {
 
     public void setSex(String sex) {
         this.sex = sex;
+    }
+
+    public String getNickName() {
+        return nickName;
+    }
+
+    public void setNickName(String nickName) {
+        this.nickName = nickName;
     }
 }
