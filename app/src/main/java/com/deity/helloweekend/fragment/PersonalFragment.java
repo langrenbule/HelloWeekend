@@ -16,7 +16,6 @@ import com.deity.helloweekend.R;
 import com.deity.helloweekend.adapter.SquareDataAdapter;
 import com.deity.helloweekend.data.Parameters;
 import com.deity.helloweekend.entity.Dynamic;
-import com.deity.helloweekend.mvp.model.SquareOperator;
 import com.deity.helloweekend.ui.BaseFragment;
 import com.deity.helloweekend.utils.I18NData;
 import com.othershe.baseadapter.ViewHolder;
@@ -32,31 +31,25 @@ import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
 
 
+
 /**
- * 交友广场
- * Created by Deity on 2016/11/20.
+ * 详细介绍界面
+ * Created by Deity on 2016/12/5.
  */
 
-public class SquareFragment extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener{
+public class PersonalFragment extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener{
 
-    @Bind(R.id.square_item_list)
-    public RecyclerView square_item_list;
-    @Bind(R.id.widget_refresh) public SwipeRefreshLayout mSwipeRefreshLayout;
-
+    @Bind(R.id.dynamic_list)
+    public RecyclerView dynamic_list;
+    @Bind(R.id.widget_refresh)
+    public SwipeRefreshLayout mSwipeRefreshLayout;
     private SquareDataAdapter mSquareDataAdapter;
-    private SquareOperator mSquareOperator;
     private int currentNewsPage = 0;
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        mSquareOperator = new SquareOperator(getActivity());
-    }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_square, container, false);
+        View view = inflater.inflate(R.layout.fragment_personal,container,false);
         ButterKnife.bind(this, view);
         initRecycleView();
         new Handler().postDelayed(new Runnable() {
@@ -72,7 +65,7 @@ public class SquareFragment extends BaseFragment implements SwipeRefreshLayout.O
     public void initRecycleView() {
         mSquareDataAdapter = new SquareDataAdapter(getActivity(), null, true);
         //初始化EmptyView
-        View emptyView = LayoutInflater.from(getActivity()).inflate(R.layout.empty_layout, (ViewGroup) square_item_list.getParent(), false);
+        View emptyView = LayoutInflater.from(getActivity()).inflate(R.layout.empty_layout, (ViewGroup) dynamic_list.getParent(), false);
         mSquareDataAdapter.setEmptyView(emptyView);
 
         //初始化 开始加载更多的loading View
@@ -81,7 +74,7 @@ public class SquareFragment extends BaseFragment implements SwipeRefreshLayout.O
         mSquareDataAdapter.setOnLoadMoreListener(new OnLoadMoreListener() {
             @Override
             public void onLoadMore(boolean isReload) {
-                obtainSquareData(new DataCallBackResult() {
+                obtainSquareData(new SquareFragment.DataCallBackResult() {
                     @Override
                     public void callbackHandler(List<Dynamic> list, BmobException e) {
                         mSwipeRefreshLayout.setRefreshing(false);
@@ -106,35 +99,39 @@ public class SquareFragment extends BaseFragment implements SwipeRefreshLayout.O
                 Intent intent = new Intent(getActivity(), CommentActivity.class);
                 bundle.putSerializable("dynamic",data);
                 intent.putExtras(bundle);
-                //记住当前的动态
-                Parameters.currentDynamic = data;
                 startActivity(intent);
             }
         });
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        square_item_list.setLayoutManager(layoutManager);
-        square_item_list.setAdapter(mSquareDataAdapter);
+        dynamic_list.setLayoutManager(layoutManager);
+        dynamic_list.setAdapter(mSquareDataAdapter);
         mSwipeRefreshLayout.setColorSchemeColors(I18NData.getColor(R.color.colorAccent),I18NData.getColor(R.color.colorPrimary),I18NData.getColor(R.color.colorPrimaryDark));
         mSwipeRefreshLayout.setOnRefreshListener(this);
     }
 
-    /**
-     * Called when a swipe gesture triggers a refresh.
-     */
-    @Override
-    public void onRefresh() {
-        obtainSquareDataFirst();
-    }
 
-    public interface DataCallBackResult{
-        void callbackHandler(List<Dynamic> list, BmobException e);
+    /**
+     *  mPullLoadMoreRecyclerView.scrollToTop() 快速返回顶部
+     *  square_item_list.setHasMore(false);//通知控件，已经没数据了
+     */
+    public void obtainSquareData(final SquareFragment.DataCallBackResult result) {
+        BmobQuery<Dynamic> query = new BmobQuery<>();
+        query.order("-createdAt").setLimit(Parameters.REQUEST_PER_PAGE).setSkip(Parameters.REQUEST_PER_PAGE*(currentNewsPage)).include("author");
+        query.addWhereEqualTo("author", Parameters.currentDynamic.getAuthor());
+        query.findObjects(new FindListener<Dynamic>() {
+            @Override
+            public void done(List<Dynamic> list, BmobException e) {
+                result.callbackHandler(list,e);
+            }
+        });
+
     }
 
     public void obtainSquareDataFirst(){
         currentNewsPage=0;//重置页数
-        obtainSquareData(new DataCallBackResult() {
+        obtainSquareData(new SquareFragment.DataCallBackResult() {
             @Override
             public void callbackHandler(List<Dynamic> list, BmobException e) {
                 mSwipeRefreshLayout.setRefreshing(false);
@@ -144,25 +141,16 @@ public class SquareFragment extends BaseFragment implements SwipeRefreshLayout.O
                 }
                 if (null != e) {
                     System.out.println("获取数据失败>>>>" + e.toString());
-                    //加载失败，更新footer view提示
                 }
             }
         });
     }
 
     /**
-     *  mPullLoadMoreRecyclerView.scrollToTop() 快速返回顶部
-     *  square_item_list.setHasMore(false);//通知控件，已经没数据了
+     * Called when a swipe gesture triggers a refresh.
      */
-    public void obtainSquareData(final DataCallBackResult result) {
-        BmobQuery<Dynamic> query = new BmobQuery<>();
-        query.order("-createdAt").setLimit(Parameters.REQUEST_PER_PAGE).setSkip(Parameters.REQUEST_PER_PAGE*(currentNewsPage))
-                .include("author").findObjects(new FindListener<Dynamic>() {
-            @Override
-            public void done(List<Dynamic> list, BmobException e) {
-                result.callbackHandler(list,e);
-            }
-        });
-
+    @Override
+    public void onRefresh() {
+        obtainSquareDataFirst();
     }
 }

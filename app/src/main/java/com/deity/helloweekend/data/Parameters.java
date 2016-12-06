@@ -1,5 +1,7 @@
 package com.deity.helloweekend.data;
 
+import com.deity.helloweekend.entity.Dynamic;
+
 /**
  * Created by Deity on 2016/11/19.
  */
@@ -13,6 +15,10 @@ public class Parameters {
     public static final int REQUEST_PER_PAGE=5;
     /**百度广告开屏Id*/
     public static final String adPlaceId="3078409";
+
+    public static Dynamic currentDynamic;
+
+
     public enum SexType{
 
         SEX_FEMALE(0,"女"),

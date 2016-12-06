@@ -23,7 +23,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-
         <ScrollView
             android:id="@+id/commit_scroll"
             android:layout_width="match_parent"
@@ -47,20 +46,16 @@
                     android:layout_height="1dp"
                     android:background="#dddddd" />
 
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/comment_list"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
+                <!--<android.support.v4.widget.SwipeRefreshLayout-->
+                    <!--android:id="@+id/widget_refresh"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content">-->
 
-                <TextView
-                    android:id="@+id/loadmore"
-                    style="@style/TextTheme.tipstheme_second"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:padding="12dip"
-                    android:text="加载更多评论"
-                    android:textColor="@drawable/selector_load_more" />
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/comment_list"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+                <!--</android.support.v4.widget.SwipeRefreshLayout>-->
             </LinearLayout>
         </ScrollView>
 
@@ -85,8 +80,7 @@
                 android:hint="来评论一句吧"
                 android:minHeight="40dp"
                 android:paddingLeft="4dip"
-                app:layout_widthPercent="70%w">
-            </EditText>
+                app:layout_widthPercent="70%w"/>
 
             <Button
                 android:id="@+id/comment_commit"

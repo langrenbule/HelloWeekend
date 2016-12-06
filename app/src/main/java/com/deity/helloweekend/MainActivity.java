@@ -14,12 +14,21 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.deity.helloweekend.fragment.PersonalFragment;
+import com.deity.helloweekend.fragment.SettingFragment;
 import com.deity.helloweekend.fragment.SquareFragment;
 import com.deity.helloweekend.ui.BaseActivity;
 
 
 public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+    private static final int INDEX_HOME=0;
+    private static final int INDEX_SETTING=1;
+    private static final int INDEX_PERSONAL=2;
+
+    private SquareFragment squareFragment;
+    private SettingFragment mSettingFragment;
+    private PersonalFragment mPersonalFragment;
 
 
     @Override
@@ -50,8 +59,33 @@ public class MainActivity extends BaseActivity
     }
 
     public void initFragment(){
-        SquareFragment squareFragment = new SquareFragment();
+        squareFragment = new SquareFragment();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction().replace(R.id.main_content,squareFragment);
+        transaction.commit();
+    }
+
+    public void selectFragment(int index){
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        switch (index){
+            case INDEX_HOME:
+                if (null==squareFragment){
+                    squareFragment = new SquareFragment();
+                }
+                transaction.replace(R.id.main_content,squareFragment);
+                break;
+            case INDEX_SETTING:
+                if (null==mSettingFragment){
+                    mSettingFragment = new SettingFragment();
+                }
+                transaction.replace(R.id.main_content,mSettingFragment);
+                break;
+            case INDEX_PERSONAL:
+                if (null==mPersonalFragment){
+                    mPersonalFragment = new PersonalFragment();
+                }
+                transaction.replace(R.id.main_content,mPersonalFragment);
+                break;
+        }
         transaction.commit();
     }
 
@@ -97,15 +131,11 @@ public class MainActivity extends BaseActivity
 
         if (id == R.id.nav_camera) {
             // Handle the camera action
-            Intent intent = new Intent(MainActivity.this, CommentActivity.class);
-//                intent.putExtra("url", data.getNewBornArticleUrl());
-//                intent.putExtra("imageUrl", data.getNewBornImageUrl());
-//                intent.putExtra("newsTitle", data.getNewBornTitle());
-            startActivity(intent);
+            selectFragment(INDEX_HOME);
         } else if (id == R.id.nav_gallery) {
-
+            selectFragment(INDEX_SETTING);
         } else if (id == R.id.nav_slideshow) {
-
+            selectFragment(INDEX_PERSONAL);
         } else if (id == R.id.nav_share) {
 
         } else if (id == R.id.nav_send) {
