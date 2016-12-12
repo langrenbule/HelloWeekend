@@ -27,11 +27,11 @@ public class SquareDataAdapter extends CommonBaseAdapter<Dynamic> {
 
     @Override
     protected void convert(ViewHolder holder, Dynamic data) {
-        if (TextUtils.isEmpty(data.getAuthor().getNickName())){
+        if (!TextUtils.isEmpty(data.getAuthor().getNickName())){
             holder.setText(R.id.user_name,data.getAuthor().getNickName());
         }
 //        if (!TextUtils.isEmpty(data.getAuthor().getAvatar().getUrl())){
-//            Glide.with(context).load(data.getAuthor().getAvatar().getUrl()).placeholder(R.drawable.ic_launcher).into((ImageView) holder.getView(R.id.user_logo));
+//            Glide.with(context).load(data.getAuthor().getAvatar().getUrl()).placeholder(R.drawable.ic_laucher).into((ImageView) holder.getView(R.id.user_logo));
 //        }
         holder.setText(R.id.content_text,data.getContent());
         if (null!=data.getDynamicImage()) {

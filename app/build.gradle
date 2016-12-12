@@ -68,5 +68,5 @@ dependencies {
     compile files('libs/okhttp-3.3.1.jar')
     compile files('libs/okio-1.7.0.jar')
     compile files('libs/org.apache.http.legacy.jar')
-    compile 'com.othershe:BaseAdapter:1.0.4'
+    compile 'com.othershe:BaseAdapter:1.1.0'
 }

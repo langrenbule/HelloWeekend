@@ -2,6 +2,8 @@ package com.deity.helloweekend.data;
 
 import com.deity.helloweekend.entity.Dynamic;
 
+import java.util.Map;
+
 /**
  * Created by Deity on 2016/11/19.
  */
@@ -17,6 +19,8 @@ public class Parameters {
     public static final String adPlaceId="3078409";
 
     public static Dynamic currentDynamic;
+    public static Map<String, String> currentMapUserData;
+
 
 
     public enum SexType{

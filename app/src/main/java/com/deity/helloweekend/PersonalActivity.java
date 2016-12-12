@@ -17,7 +17,7 @@ import com.deity.helloweekend.fragment.SquareFragment;
 import com.deity.helloweekend.ui.BaseActivity;
 import com.deity.helloweekend.utils.I18NData;
 import com.othershe.baseadapter.ViewHolder;
-import com.othershe.baseadapter.interfaces.OnItemClickListeners;
+import com.othershe.baseadapter.interfaces.OnItemClickListener;
 import com.othershe.baseadapter.interfaces.OnLoadMoreListener;
 
 import java.util.List;
@@ -78,7 +78,7 @@ public class PersonalActivity extends BaseActivity implements SwipeRefreshLayout
         });
 
         //设置item点击事件监听
-        mSquareDataAdapter.setOnItemClickListener(new OnItemClickListeners<Dynamic>() {
+        mSquareDataAdapter.setOnItemClickListener(new OnItemClickListener<Dynamic>() {
 
             @Override
             public void onItemClick(ViewHolder viewHolder, Dynamic data, int position) {

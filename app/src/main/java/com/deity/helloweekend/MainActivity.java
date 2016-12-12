@@ -10,14 +10,22 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
+import com.deity.helloweekend.data.Parameters;
+import com.deity.helloweekend.entity.User;
 import com.deity.helloweekend.fragment.PersonalFragment;
 import com.deity.helloweekend.fragment.SettingFragment;
 import com.deity.helloweekend.fragment.SquareFragment;
 import com.deity.helloweekend.ui.BaseActivity;
+
+import cn.bmob.v3.BmobUser;
+import cn.bmob.v3.exception.BmobException;
+import cn.bmob.v3.listener.UpdateListener;
 
 
 public class MainActivity extends BaseActivity
@@ -56,6 +64,26 @@ public class MainActivity extends BaseActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         initFragment();
+        initUser();
+    }
+
+    /**初始化用户数据*/
+    public void initUser(){
+        User user = BmobUser.getCurrentUser(User.class);
+        if (TextUtils.isEmpty(user.getNickName())){
+            user.setNickName(Parameters.currentMapUserData.get("screen_name"));
+            user.setSex(Parameters.currentMapUserData.get("gender"));
+//            BmobFile file = new BmobFile(new File(Parameters.currentMapUserData.get("profile_image_url")));
+//            user.setAvatar(file);
+            user.update(new UpdateListener() {
+                @Override
+                public void done(BmobException e) {
+                    if (null==e){
+                        Toast.makeText(MainActivity.this,"更新个人信息成功",Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+        }
     }
 
     public void initFragment(){

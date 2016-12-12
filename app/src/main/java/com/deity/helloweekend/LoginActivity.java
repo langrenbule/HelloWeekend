@@ -8,6 +8,8 @@ import android.util.Log;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.deity.helloweekend.data.Parameters;
+import com.deity.helloweekend.entity.User;
 import com.deity.helloweekend.ui.BaseActivity;
 import com.umeng.socialize.UMAuthListener;
 import com.umeng.socialize.UMShareAPI;
@@ -42,8 +44,8 @@ public class LoginActivity extends BaseActivity {
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
         mShareAPI = UMShareAPI.get(this);
-        BmobUser user = BmobUser.getCurrentUser();
-        if(user!=null){
+        User user = BmobUser.getCurrentUser(User.class);
+        if(user!=null&&!TextUtils.isEmpty(user.getNickName())){
             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
             startActivity(intent);
             this.finish();
@@ -54,21 +56,21 @@ public class LoginActivity extends BaseActivity {
     @OnClick(R.id.btn_weixin)
     public void Authorize4WX(){
         UMShareAPI mShareAPI = UMShareAPI.get( LoginActivity.this );
-        mShareAPI.doOauthVerify(LoginActivity.this, SHARE_MEDIA.WEIXIN, listener);
+//        mShareAPI.doOauthVerify(LoginActivity.this, SHARE_MEDIA.WEIXIN, listener);
+        initGetUserInfo("");
     }
 
     @SuppressWarnings("unused")
     @OnClick(R.id.btn_qq)
     public void Authorize4QQ(){
         UMShareAPI mShareAPI = UMShareAPI.get( LoginActivity.this );
-        mShareAPI.doOauthVerify(LoginActivity.this, SHARE_MEDIA.QQ, listener);
+        mShareAPI.getPlatformInfo(LoginActivity.this, SHARE_MEDIA.QQ, listener);
     }
 
     private UMAuthListener listener = new UMAuthListener() {
         @Override
         public void onComplete(SHARE_MEDIA platform, int action, Map<String, String> data) {
-            Toast.makeText(getApplicationContext(), "Authorize succeed,Platform>>>"+platform.toString()+" token>>"+data.get("access_token")+" expires_in>>>"+data.get("expires_in")+" openId>>"+data.get("openid"), Toast.LENGTH_SHORT).show();
-            initGetUserInfo("");
+            Parameters.currentMapUserData = data;
             BmobUser.BmobThirdUserAuth authInfo = new BmobUser.BmobThirdUserAuth(platform.toString().toLowerCase(),data.get("access_token"), data.get("expires_in"),data.get("openid"));
             loginWithAuth(authInfo);
         }
@@ -87,7 +89,7 @@ public class LoginActivity extends BaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        mShareAPI.HandleQQError(this,requestCode,listener);
+//        mShareAPI.HandleQQError(this,requestCode,listener);
         mShareAPI.onActivityResult(requestCode, resultCode, data);
     }
 

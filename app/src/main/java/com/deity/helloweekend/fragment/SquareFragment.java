@@ -20,7 +20,7 @@ import com.deity.helloweekend.mvp.model.SquareOperator;
 import com.deity.helloweekend.ui.BaseFragment;
 import com.deity.helloweekend.utils.I18NData;
 import com.othershe.baseadapter.ViewHolder;
-import com.othershe.baseadapter.interfaces.OnItemClickListeners;
+import com.othershe.baseadapter.interfaces.OnItemClickListener;
 import com.othershe.baseadapter.interfaces.OnLoadMoreListener;
 
 import java.util.List;
@@ -42,6 +42,7 @@ public class SquareFragment extends BaseFragment implements SwipeRefreshLayout.O
     @Bind(R.id.square_item_list)
     public RecyclerView square_item_list;
     @Bind(R.id.widget_refresh) public SwipeRefreshLayout mSwipeRefreshLayout;
+    private View reloadLayout;
 
     private SquareDataAdapter mSquareDataAdapter;
     private SquareOperator mSquareOperator;
@@ -74,6 +75,7 @@ public class SquareFragment extends BaseFragment implements SwipeRefreshLayout.O
         //初始化EmptyView
         View emptyView = LayoutInflater.from(getActivity()).inflate(R.layout.empty_layout, (ViewGroup) square_item_list.getParent(), false);
         mSquareDataAdapter.setEmptyView(emptyView);
+        reloadLayout = LayoutInflater.from(getActivity()).inflate(R.layout.load_failed_layout, (ViewGroup) square_item_list.getParent(), false);
 
         //初始化 开始加载更多的loading View
         mSquareDataAdapter.setLoadingView(R.layout.load_loading_layout);
@@ -88,7 +90,9 @@ public class SquareFragment extends BaseFragment implements SwipeRefreshLayout.O
                         if (null != list && !list.isEmpty()) {
                             currentNewsPage++;//只有成功了，才递增
                             mSquareDataAdapter.setLoadMoreData(list);
+                            return;
                         }
+                        mSquareDataAdapter.setReloadView(reloadLayout);
                         if (null != e) {
                             System.out.println("获取数据失败>>>>" + e.toString());
                         }
@@ -98,7 +102,7 @@ public class SquareFragment extends BaseFragment implements SwipeRefreshLayout.O
         });
 
         //设置item点击事件监听
-        mSquareDataAdapter.setOnItemClickListener(new OnItemClickListeners<Dynamic>() {
+        mSquareDataAdapter.setOnItemClickListener(new OnItemClickListener<Dynamic>() {
 
             @Override
             public void onItemClick(ViewHolder viewHolder, Dynamic data, int position) {

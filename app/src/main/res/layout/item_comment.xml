@@ -23,6 +23,16 @@
             android:textSize="16sp" />
 
         <TextView
+            android:id="@+id/comment_index"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text = "1楼"
+            android:gravity="center"
+            android:textColor="#888888"
+            android:layout_marginRight="4dp"
+            android:layout_alignParentRight="true" />
+
+        <TextView
             android:id="@+id/content_comment"
             android:layout_below="@+id/userName_comment"
             android:layout_width="wrap_content"

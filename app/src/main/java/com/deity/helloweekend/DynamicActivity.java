@@ -102,8 +102,11 @@ public class DynamicActivity extends BaseActivity {
         figureFile.upload(new UploadFileListener() {
             @Override
             public void done(BmobException e) {
-                public4Message(dynamicMessage.getContent(),figureFile);
-                Toast.makeText(getBaseContext(), "上传动态 upload=", Toast.LENGTH_SHORT).show();
+                if (null==e){
+                    public4Message(dynamicMessage.getContent(),figureFile);
+                }else {
+                    Toast.makeText(DynamicActivity.this,"发表动态失败,错误原因:"+e.getMessage(),Toast.LENGTH_LONG).show();
+                }
             }
         });
 
@@ -120,7 +123,11 @@ public class DynamicActivity extends BaseActivity {
         dynamic.save(new SaveListener<String>() {
             @Override
             public void done(String s, BmobException e) {
-                Toast.makeText(getBaseContext(), "恭喜,发表动态成功! desc="+s+"Exception=", Toast.LENGTH_SHORT).show();
+                if (null==e) {
+                    Toast.makeText(getBaseContext(), "恭喜,发表动态成功!", Toast.LENGTH_SHORT).show();
+                }else {
+                    Toast.makeText(getBaseContext(), "发表动态失败了!错误原因:"+e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
